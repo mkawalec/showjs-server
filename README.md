@@ -23,3 +23,11 @@ will do. In order to run the server side do:
     ./syncer.coffee
 
 Then head to [http://localhost:55555](http://localhost:55555).
+
+
+Philosophy
+---------
+
+Tests are good and all, but for now we don't really have the time to write them.
+If you can, please do, this will be a very welcome contribution. 
+Generally, we stick to the ethos of [Programming Motherfucker](http://programming-motherfucker.com/)
