@@ -13,6 +13,15 @@ module.exports.SessionCreator = React.createClass
         @refs.password.getDOMNode().value = ''
         @setState {presentationId: JSON.parse(resp.data).id}
 
+  keyInInput: (e) ->
+    console.log e
+    if e.which == 13
+      @pushPass()
+
+  componentDidMount: ->
+    password = @refs.password.getDOMNode()
+    password.focus()
+    password.addEventListener 'keyup', @keyInInput
 
   render: ->
     presentationId = ''
@@ -26,11 +35,11 @@ module.exports.SessionCreator = React.createClass
 
     (
       <div>
-        <input autofocus className={passClasses.join(' ')}
-                         type='password'
-                         ref='password'
-                         placeholder='Master Password'
-                         />
+        <input className={passClasses.join(' ')}
+               type='password'
+               ref='password'
+               placeholder='Master Password'
+               />
 
         <button type='button' onClick={@pushPass} className='btn btn-primary'>
           Get the id!
