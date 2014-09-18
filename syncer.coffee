@@ -40,6 +40,8 @@ io.on 'connection', (socket) ->
     Master.findOne {doc_id: doc_id}, 'password', (err, master) ->
       if err?
         return socket.emit 'error', {msg: 'Mongo error: ' + err}
+      if not master?
+        return socket.emit 'error', {msg: 'Wrong doc_id'}
 
       if get_hash(pass) == master.password
         redis_client.set redis_prefix + doc_id, JSON.stringify(slide), ->
@@ -51,6 +53,11 @@ io.on 'connection', (socket) ->
     {doc_id, pass} = data
 
     Master.findOne {doc_id: doc_id}, 'password', (err, master) ->
+      if err?
+        return socket.emit 'error', {msg: 'Mongo error: ' + err}
+      if not master?
+        return socket.emit 'error', {msg: 'Wrong doc_id'}
+
       if get_hash(pass) == master.password
         return socket.emit {valid: true}
       else
