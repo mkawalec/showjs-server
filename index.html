@@ -2,15 +2,29 @@
 <html lang='en'>
   <head>
 	<meta charset="utf-8">
+    <meta name="viewport" 
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
     <script src="components/lodash/dist/lodash.js"></script>
     <script src="components/q/q.js"></script>
     <script src="components/q-xhr/q-xhr.js"></script>
 
-    <script src="components/react/react.js"></script>
-    <script src="components/socket.io-client/socket.io.js"></script>
-    <link rel="stylesheet"  href="static/styles/style.css"/>
+    <script src="components/react/react.min.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="components/jquery/dist/jquery.min.js"></script>
+    <script src="components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="static/style.css"/>
   </head>
 
   <body>
+      <div class='container'>
+        <div id='session-creator'></div>
+      </div>
+
+      <script src='static/interface.js'></script>
   </body>
 </html>

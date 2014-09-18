@@ -1,9 +1,11 @@
 #!/usr/bin/env coffee
 
 bodyParser = require 'body-parser'
-app        = require('express')()
+express    = require 'express'
+app        = express()
 server     = require('http').Server(app)
 io         = require('socket.io')(server)
+_          = require 'lodash'
 
 # Redis init
 redis = require 'redis'
@@ -16,7 +18,10 @@ mongoose.connect 'mongodb://localhost/showjs'
 Master = mongoose.model 'Master', {doc_id: String, password: String}
 
 app.use(bodyParser.urlencoded({extended: true}))
+app.use('/components', express.static('components'))
+app.use('/static', express.static('static'))
 server.listen(55555)
+
 default_slide = {indexh: 0, indexv: 0}
 
 io.on 'connection', (socket) ->
@@ -49,10 +54,14 @@ io.on 'connection', (socket) ->
 
 chars = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890'
 
-get_id = (length=14) ->
+get_id = (length=12) ->
   return _.reduce _.range(length), ((acc) ->
     acc += chars[_.random(0, chars.length-1)]
   ), ''
+
+
+app.get '/', (req, res) ->
+  res.sendFile __dirname + '/index.html'
 
 app.post '/setpass', (req, res) ->
   id = get_id()
