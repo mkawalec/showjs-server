@@ -17,7 +17,7 @@ mongoose = require 'mongoose'
 mongoose.connect 'mongodb://localhost/showjs'
 Master = mongoose.model 'Master', {doc_id: String, password: String}
 
-app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.json())
 app.use('/components', express.static('components'))
 app.use('/static', express.static('static'))
 server.listen(55555)
@@ -67,6 +67,7 @@ app.post '/setpass', (req, res) ->
   id = get_id()
   {pass} = req.body
 
+  console.log('saving password: ', pass, req.body)
   current_master = new Master {doc_id: id, password: pass}
   current_master.save (err) ->
     if err?
