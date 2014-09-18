@@ -13,6 +13,10 @@ redis = require 'redis'
 redis_client = redis.createClient()
 redis_prefix = 'showjs.'
 
+# Redis Adapter for socket.io
+socket_redis = require 'socket.io-redis'
+io.adapter(socket_redis({host: 'localhost', port: 6379}))
+
 # Mongodb init
 mongoose = require 'mongoose'
 mongoose.connect 'mongodb://localhost/showjs'
