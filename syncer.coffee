@@ -30,6 +30,7 @@ get_hash = (password) ->
   password_hash = hasher.update password, 'utf-8'
   return hasher.digest 'base64'
 
+
 io.on 'connection', (socket) ->
   socket.on 'slide_change', (data) ->
     {doc_id, pass, slide} = data
@@ -45,6 +46,15 @@ io.on 'connection', (socket) ->
           io.of("/#{doc_id}").emit 'sync', {slide: slide}
       else
         socket.emit 'error', {msg: 'Wrong password'}
+
+  socket.on 'check_pass', (data) ->
+    {doc_id, pass} = data
+
+    Master.findOne {doc_id: doc_id}, 'password', (err, master) ->
+      if get_hash(pass) == master.password
+        return socket.emit {valid: true}
+      else
+        return socket.emit {valid: false}
 
   socket.on 'sync_me', (sync_params) ->
     {doc_id} = sync_params
