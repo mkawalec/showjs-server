@@ -34,7 +34,6 @@ get_hash = (password) ->
   password_hash = hasher.update password, 'utf-8'
   return hasher.digest 'base64'
 
-
 io.on 'connection', (socket) ->
   socket.on 'slide_change', (data) ->
     {doc_id, pass, slide} = data
@@ -52,6 +51,14 @@ io.on 'connection', (socket) ->
           io.of("/#{doc_id}").emit 'sync', {slide: slide}
       else
         socket.emit 'error', {msg: 'Wrong password'}
+
+  socket.on 'stats_req', (data) ->
+    {doc_id} = data
+    if not doc_id?
+      return socket.emit 'error', {msg: 'Missing document id'}
+
+    clients = io.of("/#{doc_id}").clients()
+    socket.emit 'stats', {clients: clients}
 
   socket.on 'check_pass', (data) ->
     {doc_id, pass} = data
