@@ -6,7 +6,7 @@ module.exports.SessionCreator = React.createClass
 
   pushPass: ->
     pass = @refs.password.getDOMNode().value
-    if pass.length < 3
+    if pass.length < 4
       return @setState {validated: false}
     else
       Q.xhr.post('/setpass', {pass: pass}).then (resp) =>
@@ -18,7 +18,6 @@ module.exports.SessionCreator = React.createClass
     passClasses = []
 
     if @state.presentationId
-      console.log 'setting', @state.presentationId
       presentationId = <PresentationId key={@state.presentationId} />
 
     if not @state.validated
