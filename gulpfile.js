@@ -5,6 +5,7 @@ var gulp       = require('gulp'),
     less       = require('gulp-less'),
     browserify = require('gulp-browserify'),
     rename     = require('gulp-rename'),
+    uglify     = require('gulp-uglify'),
     del        = require('del');
 
 var paths = {
@@ -32,6 +33,13 @@ gulp.task('main', ['translate'], function () {
     .pipe(gulp.dest('static/'));
 });
 
+gulp.task('compress', ['main'], function () {
+  return gulp.src('static/interface.js')
+    .pipe(uglify())
+    .pipe(rename('interface.min.js'))
+    .pipe(gulp.dest('static/'));
+});
+
 gulp.task('styles', function () {
   return gulp.src(paths.styles)
     .pipe(less())
@@ -45,3 +53,4 @@ gulp.task('watch', function () {
 });
 
 gulp.task('default', ['watch', 'main', 'styles']);
+gulp.task('build', ['compress']);

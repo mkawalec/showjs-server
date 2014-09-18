@@ -8,7 +8,7 @@ module.exports.PresentationId = React.createClass
         <div>Enter this at the end of the body of your site:</div>
         <pre>
           &lt;script type='text/javascript' src='//showjs.io/show.js'&gt;&lt;/script&gt;
-          &lt;script type='text/javascript'&gt;Showjs.setDoc('{@props.key}')&lt;/script&gt;
+          &lt;script type='text/javascript'&gt;Showjs.doc_id = '{@props.key}';&lt;/script&gt;
         </pre>
       </div>
     )
