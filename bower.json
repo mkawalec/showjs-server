@@ -1,0 +1,12 @@
+{
+  "name": "showjs-server",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "lodash": "~2.4.1",
+    "reveal.js": "~2.6.2",
+    "react": "~0.11.1",
+    "socket.io-client": "~1.1.0",
+    "q-xhr": "~0.1.2"
+  }
+}
