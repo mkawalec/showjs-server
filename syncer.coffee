@@ -6,6 +6,7 @@ app        = express()
 server     = require('http').Server(app)
 io         = require('socket.io')(server)
 _          = require 'lodash'
+crypto     = require 'crypto'
 
 # Redis init
 redis = require 'redis'
@@ -24,6 +25,11 @@ server.listen(55555)
 
 default_slide = {indexh: 0, indexv: 0}
 
+get_hash = (password) ->
+  hasher        = crypto.createHash 'sha256'
+  password_hash = hasher.update password, 'utf-8'
+  return hasher.digest 'base64'
+
 io.on 'connection', (socket) ->
   socket.on 'slide_change', (data) ->
     {doc_id, pass, slide} = data
@@ -34,7 +40,7 @@ io.on 'connection', (socket) ->
       if err?
         return socket.emit 'error', {msg: 'Mongo error: ' + err}
 
-      if pass == master.password
+      if get_hash(pass) == master.password
         redis_client.set redis_prefix + doc_id, JSON.stringify(slide), ->
           io.of("/#{doc_id}").emit 'sync', {slide: slide}
       else
@@ -64,11 +70,10 @@ app.get '/', (req, res) ->
   res.sendFile __dirname + '/index.html'
 
 app.post '/setpass', (req, res) ->
-  id = get_id()
+  id     = get_id()
   {pass} = req.body
 
-  console.log('saving password: ', pass, req.body)
-  current_master = new Master {doc_id: id, password: pass}
+  current_master = new Master {doc_id: id, password: get_hash(pass)}
   current_master.save (err) ->
     if err?
       res.status(500).send 'Error saving'
