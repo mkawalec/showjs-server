@@ -14,7 +14,6 @@ module.exports.SessionCreator = React.createClass
         @setState {presentationId: JSON.parse(resp.data).id}
 
   keyInInput: (e) ->
-    console.log e
     if e.which == 13
       @pushPass()
 
