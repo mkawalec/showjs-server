@@ -58,7 +58,8 @@ io.on 'connection', (socket) ->
       return socket.emit 'error', {msg: 'Missing document id'}
 
     clients = io.of("/#{doc_id}").clients()
-    socket.emit 'stats', {clients: clients}
+    total_clients = io.sockets.clients()
+    socket.emit 'stats', {this_document: clients, total: total_clients}
 
   socket.on 'check_pass', (data) ->
     {doc_id, pass} = data
