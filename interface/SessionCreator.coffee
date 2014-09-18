@@ -10,6 +10,7 @@ module.exports.SessionCreator = React.createClass
       return @setState {validated: false}
     else
       Q.xhr.post('/setpass', {pass: pass}).then (resp) =>
+        @refs.password.getDOMNode().value = ''
         @setState {presentationId: JSON.parse(resp.data).id}
 
 
