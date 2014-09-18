@@ -53,4 +53,4 @@ gulp.task('watch', function () {
 });
 
 gulp.task('default', ['watch', 'main', 'styles']);
-gulp.task('build', ['compress']);
+gulp.task('build', ['compress', 'styles']);
