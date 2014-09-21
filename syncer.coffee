@@ -77,7 +77,7 @@ io.on 'connection', (socket) ->
 
   socket.on 'sync_me', (sync_params={}) ->
     {doc_id} = sync_params
-    if not doc?
+    if not doc_id?
       socket.emit 'error', {msg: 'Missing doc id'}
     else
       redis_client.get redis_prefix + doc_id, (data) ->
