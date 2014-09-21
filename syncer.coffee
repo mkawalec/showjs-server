@@ -41,26 +41,34 @@ send_stats = (room_id) ->
   io.to(room_id).emit 'stats',
     {this_document: clients, total: total_clients}
 
-validate = (fn) ->
+validateProducer = (socket, reqs=[]) ->
   # A decorator validating a form of a request
-  ->
-    if Object.prototype.toString.call(arguments[0]) != '[object Object]'
-      socket.emit 'error',
-        {msg: 'Wrong type of an arguments (needs object)'}
-    else if not arguments[0].doc_id?
-      socket.emit 'error', {msg: 'Missing doc id'}
-    else
-      fn.apply this, arguments
+  (fn) ->
+    ->
+      args = arguments
+
+      if Object.prototype.toString.call(args[0]) != '[object Object]'
+        socket.emit 'error_msg',
+          {msg: 'Wrong type of an arguments (needs object)'}
+      else if _.every(reqs, (req) ->
+        if not args[0][req]?
+          socket.emit 'error_msg', {msg: 'Missing ' + req}
+          false
+        else
+          true
+      )
+        fn.apply this, arguments
 
 
 io.on 'connection', (socket) ->
   room_id = undefined
+  validate = _.partial validateProducer, socket
 
   socket.on 'disconnect', ->
     # If the preson disconnects, notify everyone in their room
     if room_id then send_stats(room_id)
 
-  socket.on 'join_room', validate (data) ->
+  socket.on 'join_room', validate(['doc_id']) (data) ->
     {doc_id} = data
     room_id = doc_id
 
@@ -73,14 +81,14 @@ io.on 'connection', (socket) ->
 
     send_stats(doc_id)
 
-  socket.on 'slide_change', validate (data) ->
+  socket.on 'slide_change', validate(['doc_id', 'pass', 'slide', 'setter']) (data) ->
     {doc_id, pass, slide, setter} = data
 
     Master.findOne {doc_id: doc_id}, 'password', (err, master) ->
       if err?
-        return socket.emit 'error', {msg: 'Mongo error: ' + err}
+        return socket.emit 'error_msg', {msg: 'Mongo error: ' + err}
       if not master?
-        return socket.emit 'error', {msg: 'Wrong doc_id'}
+        return socket.emit 'error_msg', {msg: 'Wrong doc_id'}
 
       if get_hash(pass) == master.password
         payload =
@@ -90,16 +98,16 @@ io.on 'connection', (socket) ->
         redis_client.set redis_prefix + doc_id, JSON.stringify(payload), ->
           io.to(doc_id).emit 'sync', payload
       else
-        socket.emit 'error', {msg: 'Wrong password'}
+        socket.emit 'error_msg', {msg: 'Wrong password'}
 
-  socket.on 'check_pass', validate (data, cb) ->
+  socket.on 'check_pass', validate(['doc_id', 'pass']) (data, cb) ->
     {doc_id, pass} = data
 
     Master.findOne {doc_id: doc_id}, 'password', (err, master) ->
       if err?
-        return socket.emit 'error', {msg: 'Mongo error: ' + err}
+        return socket.emit 'error_msg', {msg: 'Mongo error: ' + err}
       if not master?
-        return socket.emit 'error', {msg: 'Wrong doc_id'}
+        return socket.emit 'error_msg', {msg: 'Wrong doc_id'}
 
       if get_hash(pass) == master.password
         cb {valid: true}
