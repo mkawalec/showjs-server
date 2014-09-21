@@ -82,9 +82,9 @@ io.on 'connection', (socket) ->
     else
       redis_client.get redis_prefix + doc_id, (data) ->
         if data?
-          socket.emit 'sync', JSON.parse(data)
+          socket.emit JSON.parse(data)
         else
-          socket.emit 'sync', default_slide
+          socket.emit default_slide
   
   socket.on 'error', ( -> )
 
