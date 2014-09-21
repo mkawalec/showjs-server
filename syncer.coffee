@@ -9,7 +9,9 @@ _          = require 'lodash'
 crypto     = require 'crypto'
 
 # Redis init
-redis = require 'redis'
+redis   = require 'redis'
+Emitter = require 'node-redis-events'
+emitter = new Emitter { namespace: 'syncjs' }
 redis_client = redis.createClient()
 redis_prefix = 'showjs.'
 
@@ -58,7 +60,6 @@ validateProducer = (socket, reqs=[]) ->
           true
       )
         fn.apply this, arguments
-
 
 io.on 'connection', (socket) ->
   room_id = undefined
@@ -136,6 +137,16 @@ app.post '/setpass', (req, res) ->
     if err?
       res.status(500).send 'Error saving'
     else
+      Master.count (err, count) ->
+        emitter.emit 'new_user', count
+
       res.send JSON.stringify({id: id})
 
+
+io.of('/landing').on 'connection', (socket) ->
+  emitter.on 'new_user', (count) ->
+    io.of('/landing').emit 'user_count', {count: count}
+
+  Master.count (err, count) ->
+    io.of('/landing').emit 'user_count', {count: count}
 
