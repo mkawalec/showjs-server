@@ -35,7 +35,7 @@ get_hash = (password) ->
   return hasher.digest 'base64'
 
 io.on 'connection', (socket) ->
-  socket.on 'slide_change', (data) ->
+  socket.on 'slide_change', (data={}) ->
     {doc_id, pass, slide} = data
     if not doc_id?
       return socket.emit 'error', {msg: 'Missing document id'}
@@ -52,7 +52,7 @@ io.on 'connection', (socket) ->
       else
         socket.emit 'error', {msg: 'Wrong password'}
 
-  socket.on 'stats_req', (data) ->
+  socket.on 'stats_req', (data={}) ->
     {doc_id} = data
     if not doc_id?
       return socket.emit 'error', {msg: 'Missing document id'}
@@ -61,7 +61,7 @@ io.on 'connection', (socket) ->
     total_clients = io.sockets.clients()
     socket.emit 'stats', {this_document: clients, total: total_clients}
 
-  socket.on 'check_pass', (data) ->
+  socket.on 'check_pass', (data={}) ->
     {doc_id, pass} = data
 
     Master.findOne {doc_id: doc_id}, 'password', (err, master) ->
@@ -75,7 +75,7 @@ io.on 'connection', (socket) ->
       else
         return socket.emit {valid: false}
 
-  socket.on 'sync_me', (sync_params) ->
+  socket.on 'sync_me', (sync_params={}) ->
     {doc_id} = sync_params
     if not doc?
       socket.emit 'error', {msg: 'Missing doc id'}
