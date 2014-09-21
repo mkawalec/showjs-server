@@ -43,6 +43,8 @@ send_stats = (room_id) ->
   io.to(room_id).emit 'stats',
     {this_document: clients, total: total_clients}
 
+  emitter.emit 'online_count', total_clients
+
 validateProducer = (socket, reqs=[]) ->
   # A decorator validating a form of a request
   (fn) ->
@@ -145,8 +147,12 @@ app.post '/setpass', (req, res) ->
 
 io.of('/landing').on 'connection', (socket) ->
   emitter.on 'new_user', (count) ->
-    io.of('/landing').emit 'user_count', {count: count}
+    io.of('/landing').emit 'user_count', {registered: count}
+
+  emitter.on 'online_count', (count) ->
+    io.of('/landing').emit 'user_count', {online: count}
 
   Master.count (err, count) ->
-    io.of('/landing').emit 'user_count', {count: count}
+    total_clients = io.sockets.sockets.length
+    io.of('/landing').emit 'user_count', {registered: count, online: total_clients}
 

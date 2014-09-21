@@ -1,14 +1,17 @@
 module.exports.UserCount = React.createClass
   getInitialState: ->
-    return {count: 0}
+    return {registered: 0, online: 0}
 
-  componentWillMount: ->
+  componentDidMount: ->
     socket = io '/landing'
     socket.on 'user_count', (data={}) =>
-      {count} = data
-      @setState {count: count}
+      console.log data
+      @setState data
 
   render: ->
     (
-      <div>Presentations synced: {@state.count}</div>
+      <div>
+        <div>Presentations synced: {@state.registered}</div>
+        <div>Users online: {@state.online}</div>
+      </div>
     )
