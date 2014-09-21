@@ -34,11 +34,47 @@ get_hash = (password) ->
   password_hash = hasher.update password, 'utf-8'
   return hasher.digest 'base64'
 
+send_stats = (room_id) ->
+  clients = _.keys(io.sockets.adapter.rooms[room_id]).length
+  total_clients = io.sockets.sockets.length
+
+  io.to(room_id).emit 'stats',
+    {this_document: clients, total: total_clients}
+
+validate = (fn) ->
+  # A decorator validating a form of a request
+  ->
+    if Object.prototype.toString.call(arguments[0]) != '[object Object]'
+      socket.emit 'error',
+        {msg: 'Wrong type of an arguments (needs object)'}
+    else if not arguments[0].doc_id?
+      socket.emit 'error', {msg: 'Missing doc id'}
+    else
+      fn.apply this, arguments
+
+
 io.on 'connection', (socket) ->
-  socket.on 'slide_change', (data={}) ->
-    {doc_id, pass, slide} = data
-    if not doc_id?
-      return socket.emit 'error', {msg: 'Missing document id'}
+  room_id = undefined
+
+  socket.on 'disconnect', ->
+    # If the preson disconnects, notify everyone in their room
+    if room_id then send_stats(room_id)
+
+  socket.on 'join_room', validate (data) ->
+    {doc_id} = data
+    room_id = doc_id
+
+    socket.join doc_id
+    redis_client.get redis_prefix + doc_id, (data) ->
+      if data?
+        socket.emit 'sync', JSON.parse(data)
+      else
+        socket.emit 'sync', {slide: default_slide, setter: -1}
+
+    send_stats(doc_id)
+
+  socket.on 'slide_change', validate (data) ->
+    {doc_id, pass, slide, setter} = data
 
     Master.findOne {doc_id: doc_id}, 'password', (err, master) ->
       if err?
@@ -47,21 +83,16 @@ io.on 'connection', (socket) ->
         return socket.emit 'error', {msg: 'Wrong doc_id'}
 
       if get_hash(pass) == master.password
-        redis_client.set redis_prefix + doc_id, JSON.stringify(slide), ->
-          io.to("#{doc_id}").emit 'sync', {slide: slide}
+        payload =
+          slide: slide
+          setter: setter
+
+        redis_client.set redis_prefix + doc_id, JSON.stringify(payload), ->
+          io.to(doc_id).emit 'sync', payload
       else
         socket.emit 'error', {msg: 'Wrong password'}
 
-  socket.on 'stats_req', (data={}, cb) ->
-    {doc_id} = data
-    if not doc_id?
-      return socket.emit 'error', {msg: 'Missing document id'}
-
-    clients = io.sockets.clients(doc_id)
-    total_clients = io.sockets.clients()
-    cb {this_document: clients, total: total_clients}
-
-  socket.on 'check_pass', (data={}, cb) ->
+  socket.on 'check_pass', validate (data, cb) ->
     {doc_id, pass} = data
 
     Master.findOne {doc_id: doc_id}, 'password', (err, master) ->
@@ -75,17 +106,6 @@ io.on 'connection', (socket) ->
       else
         cb {valid: false}
 
-  socket.on 'sync_me', (sync_params={}, cb) ->
-    {doc_id} = sync_params
-    if not doc_id?
-      socket.emit 'error', {msg: 'Missing doc id'}
-    else
-      redis_client.get redis_prefix + doc_id, (data) ->
-        if data?
-          socket.emit 'sync', JSON.parse(data)
-        else
-          socket.emit 'sync', default_slide
-  
   socket.on 'error', ( -> )
 
 chars = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890'
