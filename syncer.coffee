@@ -73,7 +73,7 @@ io.on 'connection', (socket) ->
     room_id = doc_id
 
     socket.join doc_id
-    redis_client.get redis_prefix + doc_id, (data) ->
+    redis_client.get doc_id, (err, data) ->
       if data?
         socket.emit 'sync', JSON.parse(data)
       else
@@ -95,7 +95,7 @@ io.on 'connection', (socket) ->
           slide: slide
           setter: setter
 
-        redis_client.set redis_prefix + doc_id, JSON.stringify(payload), ->
+        redis_client.set doc_id, JSON.stringify(payload), ->
           io.to(doc_id).emit 'sync', payload
       else
         socket.emit 'error_msg', {msg: 'Wrong password'}
