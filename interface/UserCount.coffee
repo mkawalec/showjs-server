@@ -5,7 +5,6 @@ module.exports.UserCount = React.createClass
   componentDidMount: ->
     socket = io '/landing'
     socket.on 'user_count', (data={}) =>
-      console.log data
       @setState data
 
   render: ->
