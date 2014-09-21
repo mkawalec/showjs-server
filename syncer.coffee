@@ -48,20 +48,20 @@ io.on 'connection', (socket) ->
 
       if get_hash(pass) == master.password
         redis_client.set redis_prefix + doc_id, JSON.stringify(slide), ->
-          io.of("/#{doc_id}").emit 'sync', {slide: slide}
+          io.to("#{doc_id}").emit 'sync', {slide: slide}
       else
         socket.emit 'error', {msg: 'Wrong password'}
 
-  socket.on 'stats_req', (data={}) ->
+  socket.on 'stats_req', (data={}, cb) ->
     {doc_id} = data
     if not doc_id?
       return socket.emit 'error', {msg: 'Missing document id'}
 
-    clients = io.of("/#{doc_id}").clients()
+    clients = io.sockets.clients(doc_id)
     total_clients = io.sockets.clients()
-    socket.emit 'stats', {this_document: clients, total: total_clients}
+    cb {this_document: clients, total: total_clients}
 
-  socket.on 'check_pass', (data={}) ->
+  socket.on 'check_pass', (data={}, cb) ->
     {doc_id, pass} = data
 
     Master.findOne {doc_id: doc_id}, 'password', (err, master) ->
@@ -71,20 +71,20 @@ io.on 'connection', (socket) ->
         return socket.emit 'error', {msg: 'Wrong doc_id'}
 
       if get_hash(pass) == master.password
-        return socket.emit {valid: true}
+        cb {valid: true}
       else
-        return socket.emit {valid: false}
+        cb {valid: false}
 
-  socket.on 'sync_me', (sync_params={}) ->
+  socket.on 'sync_me', (sync_params={}, cb) ->
     {doc_id} = sync_params
     if not doc_id?
       socket.emit 'error', {msg: 'Missing doc id'}
     else
       redis_client.get redis_prefix + doc_id, (data) ->
         if data?
-          socket.emit JSON.parse(data)
+          socket.emit 'sync', JSON.parse(data)
         else
-          socket.emit default_slide
+          socket.emit 'sync', default_slide
   
   socket.on 'error', ( -> )
 
