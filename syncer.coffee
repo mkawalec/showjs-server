@@ -85,7 +85,8 @@ io.on 'connection', (socket) ->
           socket.emit 'sync', JSON.parse(data)
         else
           socket.emit 'sync', default_slide
-
+  
+  socket.on 'error', ( -> )
 
 chars = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890'
 
