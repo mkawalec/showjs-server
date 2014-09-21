@@ -35,7 +35,7 @@ gulp.task('main', ['translate'], function () {
 
 gulp.task('compress', ['main'], function () {
   return gulp.src('static/interface.js')
-    .pipe(uglify())
+    .pipe(uglify(mangle: false))
     .pipe(rename('interface.min.js'))
     .pipe(gulp.dest('static/'));
 });
