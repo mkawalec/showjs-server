@@ -22,7 +22,15 @@ io.adapter(socket_redis({host: 'localhost', port: 6379}))
 # Mongodb init
 mongoose = require 'mongoose'
 mongoose.connect 'mongodb://localhost/showjs'
+
+# Mongoose models
 Master = mongoose.model 'Master', {doc_id: String, password: String}
+Comment = mongoose.model 'Comment', {
+  doc_id: String
+  contents: String
+  author: String
+  in_reply_to: String
+}
 
 app.use(bodyParser.json())
 app.use('/components', express.static('components'))
@@ -63,6 +71,12 @@ validateProducer = (socket, reqs=[]) ->
       )
         fn.apply this, arguments
 
+send_comments = (socket, doc_id) ->
+  # Send comments for a given doc_id
+
+  comments = Comment.find {doc_id: doc_id}, (err, comments) ->
+    socket.emit 'comment', comments
+
 io.on 'connection', (socket) ->
   room_id = undefined
   validate = _.partial validateProducer, socket
@@ -70,6 +84,18 @@ io.on 'connection', (socket) ->
   socket.on 'disconnect', ->
     # If the preson disconnects, notify everyone in their room
     if room_id then send_stats(room_id)
+
+  socket.on 'add_comment', validate(['doc_id', 'contents', 'author']) (data) ->
+    comment = new Comment {
+      doc_id: data.doc_id
+      contents: data.contents
+      author: data.author
+      in_reply_to: data.in_reply_to
+    }
+
+    comment.save (err) ->
+      if not err?
+        io.to(doc_id).emit 'comment', comment
 
   socket.on 'join_room', validate(['doc_id']) (data) ->
     {doc_id} = data
@@ -83,6 +109,7 @@ io.on 'connection', (socket) ->
         socket.emit 'sync', {slide: default_slide, setter: -1}
 
     send_stats(doc_id)
+    send_comments(socket, doc_id)
 
   socket.on 'slide_change', validate(['doc_id', 'pass', 'slide', 'setter']) (data) ->
     {doc_id, pass, slide, setter} = data
