@@ -1,0 +1,29 @@
+web:
+  build: .
+  command: lsc server
+  volumes:
+    - .:/service/code
+  ports:
+    - "55555:55555"
+  links:
+    - redis
+    - postgres
+
+redis:
+  image: redis
+
+pgdata:
+  image: busybox:latest
+  volumes:
+    - /var/lib/postgresql/data
+
+postgres:
+  image: postgres:9.3
+  ports: 
+    - "5445:5432"
+  environment:
+    POSTGRES_PASSWORD: showjs
+    POSTGRES_USER: showjs
+    POSTGRES_DATABASE: showjs
+  volumes_from:
+    - pgdata

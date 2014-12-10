@@ -4,6 +4,10 @@
   "description": "A server side of Show.js",
   "author": "Michal Kawalec <michal@bazzle.me>",
   "license": "MIT",
+  "scripts" : {
+    "prestart": "fig build",
+    "start": "fig up"
+  },
   "dependencies": {
     "body-parser": "^1.8.2",
     "coffee-react": "~0.5.0",
