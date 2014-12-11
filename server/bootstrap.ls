@@ -5,6 +5,7 @@ Emitter = require 'node-redis-events'
 # so that all the clients would get notified
 emitter = new Emitter do
   namespace: \syncjs
+  hostname: \redis
 
 redis-client = redis.create-client 6379, 'redis'
 redis-prefix = \showjs.

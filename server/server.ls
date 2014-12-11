@@ -27,8 +27,6 @@ app.use do
 server.listen 55555
 
 
-console.log 'Server has started!'
-
 module.exports = do
   server: server
   io: io
