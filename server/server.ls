@@ -31,4 +31,6 @@ module.exports = do
   server: server
   io: io
 
+console.log 'the server is up!'
+
 module.exports <<< bootstrap

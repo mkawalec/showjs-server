@@ -57,6 +57,7 @@ var server;
 function spawnServer(cb) {
   if (server) {
     server.on('exit', function() {
+      console.log('the server is down! Restarting...');
       server = null;
       spawnServer(cb);
     });

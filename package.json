@@ -5,8 +5,8 @@
   "author": "Michal Kawalec <michal@bazzle.me>",
   "license": "MIT",
   "scripts" : {
-    "prestart": "fig build",
-    "start": "fig up"
+    "prestart": "npm install",
+    "start": "gulp"
   },
   "dependencies": {
     "body-parser": "^1.8.2",
