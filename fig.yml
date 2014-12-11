@@ -1,8 +1,9 @@
 web:
   build: .
-  command: lsc server
+  command: gulp
   volumes:
-    - .:/service/code
+    - .:/code
+  working_dir: /code
   ports:
     - "55555:55555"
   links:
@@ -11,6 +12,8 @@ web:
 
 redis:
   image: redis
+  expose:
+    - "6379"
 
 pgdata:
   image: busybox:latest
@@ -27,3 +30,5 @@ postgres:
     POSTGRES_DATABASE: showjs
   volumes_from:
     - pgdata
+  expose:
+    - "5432"

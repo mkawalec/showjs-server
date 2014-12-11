@@ -6,7 +6,7 @@ Emitter = require 'node-redis-events'
 emitter = new Emitter do
   namespace: \syncjs
 
-redis-client = redis.create-client!
+redis-client = redis.create-client 6379, 'redis'
 redis-prefix = \showjs.
 
 module.exports = do

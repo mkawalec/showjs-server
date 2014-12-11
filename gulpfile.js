@@ -6,7 +6,8 @@ var gulp       = require('gulp'),
     browserify = require('gulp-browserify'),
     rename     = require('gulp-rename'),
     uglify     = require('gulp-uglify'),
-    del        = require('del');
+    del        = require('del'),
+    spawn      = require('child_process').spawn;
 
 var paths = {
   frontend: ['interface/**/*.coffee'],
@@ -52,5 +53,37 @@ gulp.task('watch', function () {
   gulp.watch(paths.styles, ['styles']);
 });
 
-gulp.task('default', ['watch', 'main', 'styles']);
-gulp.task('build', ['compress', 'styles']);
+var server;
+function spawnServer(cb) {
+  if (server) {
+    server.on('exit', function() {
+      server = null;
+      spawnServer(cb);
+    });
+    server.kill();
+  } else {
+    server = spawn('lsc', [ 'server' ], { stdio: 'inherit' });
+    server.on('exit', function(code) {
+      server = null;
+
+      if (code && code !== 143) {
+        setTimeout(spawnServer, 500);
+      }
+    });
+
+    if (cb) {
+      cb();
+    }
+  }
+}
+
+gulp.task('server.restart', spawnServer);
+gulp.task('server', spawnServer);
+
+gulp.task('server.watch', [ 'server' ], function() {
+  gulp.watch([ 'server/**/*.ls' ], [ 'server.restart' ]);
+});
+
+
+gulp.task('default', [ 'server.watch', 'watch', 'main', 'styles' ]);
+gulp.task('build', [ 'server.watch', 'compress', 'styles' ]);
