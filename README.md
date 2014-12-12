@@ -21,8 +21,10 @@ Plan for rewrite
 * [x] knex works
 * [x] bookshelf models are added
 * [x] HapiJS with Joi are used on the server side
-* [ ] Isomorphic FluxApp and FluxApp router are used throughout
+* [x] Add socketIO endpoints verification with Joi and custom handler
 * [ ] Add model verification with checkit
+* [ ] Isomorphic FluxApp and FluxApp router are used throughout
 * [ ] Users are added, with the ability to log in/out and add presentations
 * [ ] Current functionality is added
+* [ ] Tests with PhantomJS
 * [ ] There is the ability to add PDF presentations
