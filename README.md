@@ -25,9 +25,13 @@ will do. In order to run the server side do:
 Then head to [http://localhost:55555](http://localhost:55555).
 
 
-Philosophy
----------
+Plan for rewrite
+----------------
 
-Tests are good and all, but for now we don't really have the time to write them.
-If you can, please do, this will be a very welcome contribution. 
-Generally, we stick to the ethos of [Programming Motherfucker](http://programming-motherfucker.com/)
+* [ ] knex works
+* [ ] bookshelf models are added
+* [ ] HapiJS with Joi are used on the server side
+* [ ] Current functionality is added
+* [ ] Client is less buggy
+* [ ] Users are added, with the ability to log in/out and add presentations
+* [ ] There is the ability to add PDF presentations

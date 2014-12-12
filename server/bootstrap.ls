@@ -13,9 +13,10 @@ redis-prefix = \showjs.
 knex = require \knex do
   client: \pg
   connection: do
-    user: process.env.POSTGRES_PASSWORD
+    user: process.env.POSTGRES_USER
     password: process.env.POSTGRES_PASSWORD
     database: process.env.POSTGRES_DATABASE
+    host: \postgres
 
 module.exports = do
   redis-client: redis-client
