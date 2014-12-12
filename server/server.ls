@@ -1,6 +1,4 @@
 require! './bootstrap'
-require! \express
-require! \body-parser
 
 Hapi         = require \hapi
 server       = Hapi.create-server 55555
@@ -13,6 +11,10 @@ io.adapter do
   socket-redis do
     host: \redis
     port: 6379
+
+
+socket-router = require \./utils/socket-router
+io.on 'connection', socket-router
 
 
 module.exports = do

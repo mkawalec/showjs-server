@@ -18,11 +18,13 @@ knex = require \knex do
     database: process.env.POSTGRES_DATABASE
     host: \postgres
 
+bookshelf = require \bookshelf do
+  knex
+
 module.exports = do
   redis-client: redis-client
   redis-prefix: redis-prefix
   emitter: emitter
   knex: knex
-  bookshelf: require(\bookshelf)(knex)
-
+  bookshelf: bookshelf
 

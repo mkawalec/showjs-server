@@ -32,6 +32,7 @@
     "lodash": "^2.4.1",
     "node-redis-events": "^1.0.0",
     "pg": "^4.1.0",
+    "prelude-ls": "^1.1.1",
     "redis": "^0.12.1",
     "socket.io": "^1.1.0",
     "socket.io-redis": "^0.1.3"

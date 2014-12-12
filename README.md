@@ -20,7 +20,7 @@ Plan for rewrite
 
 * [x] knex works
 * [x] bookshelf models are added
-* [ ] HapiJS with Joi are used on the server side
+* [x] HapiJS with Joi are used on the server side
 * [ ] Isomorphic FluxApp and FluxApp router are used throughout
 * [ ] Add model verification with checkit
 * [ ] Users are added, with the ability to log in/out and add presentations
