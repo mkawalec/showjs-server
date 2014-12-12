@@ -17,10 +17,10 @@ var User = bookshelf.Model.extend do
           sha.update(params.salt + params.password);
           params.password = sha.digest \base64
 
-          bookshelf.model.prototype.set.call(@, params);
+          bookshelf.Model.prototype.set.call(@, params);
 
       else
-        bookshelf.model.prototype.set.apply(@, arguments);
+        bookshelf.Model.prototype.set.apply(@, arguments);
 
     checkPass: (pass) ->
       return new Promise (resolve) ->
@@ -47,3 +47,6 @@ var User = bookshelf.Model.extend do
           require: true
           withRelated: do
             \presentations
+
+module.exports = do
+  Model: User
