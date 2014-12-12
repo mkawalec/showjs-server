@@ -11,7 +11,7 @@ socket-redis = require \socket.io-redis
 # Redis, so many instances can be launched
 io.adapter do
   socket-redis do
-    host: 'redis'
+    host: \redis
     port: 6379
 
 # Bind the JSON body parser and static

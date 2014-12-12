@@ -9,6 +9,10 @@ web:
   links:
     - redis
     - postgres
+  environment:
+    POSTGRES_PASSWORD: showjs
+    POSTGRES_USER: showjs
+    POSTGRES_DATABASE: showjs
 
 redis:
   image: redis

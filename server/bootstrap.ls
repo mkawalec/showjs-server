@@ -10,8 +10,16 @@ emitter = new Emitter do
 redis-client = redis.create-client 6379, 'redis'
 redis-prefix = \showjs.
 
+knex = require \knex do
+  client: \pg
+  connection: do
+    user: process.env.POSTGRES_PASSWORD
+    password: process.env.POSTGRES_PASSWORD
+    database: process.env.POSTGRES_DATABASE
+
 module.exports = do
   redis-client: redis-client
   redis-prefix: redis-prefix
   emitter: emitter
+  knex: knex
 
