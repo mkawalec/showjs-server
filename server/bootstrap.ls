@@ -23,4 +23,6 @@ module.exports = do
   redis-prefix: redis-prefix
   emitter: emitter
   knex: knex
+  bookshelf: require(\bookshelf)(knex)
+
 

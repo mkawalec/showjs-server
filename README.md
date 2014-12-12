@@ -19,7 +19,7 @@ Plan for rewrite
 ----------------
 
 * [x] knex works
-* [ ] bookshelf models are added
+* [x] bookshelf models are added
 * [ ] HapiJS with Joi are used on the server side
 * [ ] Isomorphic FluxApp and FluxApp router are used throughout
 * [ ] Add model verification with checkit
