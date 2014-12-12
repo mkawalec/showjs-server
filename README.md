@@ -28,10 +28,11 @@ Then head to [http://localhost:55555](http://localhost:55555).
 Plan for rewrite
 ----------------
 
-* [ ] knex works
+* [x] knex works
 * [ ] bookshelf models are added
 * [ ] HapiJS with Joi are used on the server side
-* [ ] Current functionality is added
-* [ ] Client is less buggy
+* [ ] Isomorphic FluxApp and FluxApp router are used throughout
+* [ ] Add model verification with checkit
 * [ ] Users are added, with the ability to log in/out and add presentations
+* [ ] Current functionality is added
 * [ ] There is the ability to add PDF presentations
