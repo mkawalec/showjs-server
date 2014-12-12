@@ -2,7 +2,7 @@
 Step = require(\./Step).Model
 
 
-var Presentation = bookshelf.Model.extend do
+Presentation = bookshelf.Model.extend do
   do
     tableName: \presentations
     getLastStep: ->

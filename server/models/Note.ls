@@ -1,7 +1,7 @@
 { bookshelf } = require '../server'
 
 
-var Note = bookshelf.Model.extend do
+Note = bookshelf.Model.extend do
   do
     tableName: \notes
     set: (params) ->

@@ -1,7 +1,7 @@
 { bookshelf } = require '../server'
 
 
-var Step = bookshelf.Model.extend do
+Step = bookshelf.Model.extend do
   do
     tableName: \steps
 

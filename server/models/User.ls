@@ -5,7 +5,7 @@ crypto        = Promise.promisifyAll require(\crypto)
 Presentation = require \./Presentation
 
 
-var User = bookshelf.Model.extend do
+User = bookshelf.Model.extend do
   do
     tableName: \users
     set: (params) ->
