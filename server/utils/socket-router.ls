@@ -12,14 +12,11 @@ handle-req = (handler, socket, data) -->
 
   handler.handler socket,data
 
+module.exports = do
+  listen: (socket) ->
+    obj-to-pairs registered-handlers
+      |> each (event, handler) ->
+        socket.on event, (handle-req handler, socket)
 
-SocketRouter = (socket) ->
-  obj-to-pairs registered-handlers
-    |> each (event, handler) ->
-      socket.on event, (handle-req handler, socket)
-
-
-SocketRouter::register = (event, handler) ->
-  registered-handers[event] = handler
-
-module.exports = new SocketRouter
+  register: (event, handler) ->
+    registered-handers[event] = handler

@@ -1,10 +1,13 @@
 require! './bootstrap'
 
-Hapi         = require \hapi
-server       = Hapi.create-server 55555
-io           = require(\socket.io)(server.listener)
-socket-redis = require \socket.io-redis
+socket-redis  = require \socket.io-redis
+socket-router = require \./utils/socket-router
+Hapi          = require \hapi
+server        = new Hapi.Server!
+server.connection do
+  port: 5555
 
+io = require(\socket.io)(server.listener)
 # SocketIO is connected through
 # Redis, so many instances can be launched
 io.adapter do
@@ -12,14 +15,14 @@ io.adapter do
     host: \redis
     port: 6379
 
+io.on 'connection', socket-router.listen
 
-socket-router = require \./utils/socket-router
-io.on 'connection', socket-router
-
+server.start!
 
 module.exports = do
   server: server
   io: io
 
-console.log 'the server is up!'
 module.exports <<< bootstrap
+
+console.log 'the server is up!'
