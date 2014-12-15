@@ -22,7 +22,6 @@ Plan for rewrite
 * [x] bookshelf models are added
 * [x] HapiJS with Joi are used on the server side
 * [x] Add socketIO endpoints verification with Joi and custom handler
-* [ ] Add model verification with checkit
 * [ ] Isomorphic FluxApp and FluxApp router are used throughout
 * [ ] Tests with PhantomJS
 * [ ] Users are added, with the ability to log in/out and add presentations
